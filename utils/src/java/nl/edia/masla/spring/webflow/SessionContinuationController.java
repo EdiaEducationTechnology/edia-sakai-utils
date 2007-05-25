@@ -24,7 +24,8 @@ package nl.edia.masla.spring.webflow;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import nl.edia.sakai.tool.util.SakaiUtils;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -39,12 +40,9 @@ public class SessionContinuationController implements Controller {
 	String view;
 
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		HttpSession mySession = request.getSession();
-		if (mySession != null) {
-			Object myExecutionKey = mySession.getAttribute("_flowExecutionKey");
-			if (myExecutionKey != null) {
-				return new ModelAndView("redirect:" + view + "?_flowExecutionKey=" + myExecutionKey);
-			}
+		Object myExecutionKey = SakaiUtils.getToolSessionAttribute("_flowExecutionKey");
+		if (myExecutionKey != null) {
+			return new ModelAndView("redirect:" + view + "?_flowExecutionKey=" + myExecutionKey);
 		}
 		return new ModelAndView("redirect:" + view);
 	}

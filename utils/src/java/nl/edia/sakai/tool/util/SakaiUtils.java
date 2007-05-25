@@ -33,6 +33,8 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.Preferences;
@@ -170,6 +172,46 @@ public class SakaiUtils {
 		String myReference = myCurrentSite.getReference();
 		Boolean myCanView = SecurityService.unlock(permission, myReference);
 		return myCanView;
+	}
+	
+	/**
+	 * Sets a tool session attribute, with the given name. 
+	 * @param name of the attribute
+	 * @param value of the attribute, not null
+	 * @see Session#setAttribute(String, Object)
+	 */
+	public static void setToolSessionAttribute(String name, Object value) {
+		ToolSession mySession = SessionManager.getCurrentToolSession();
+		if (mySession != null) {
+			mySession.setAttribute(name, value);
+		}
+	}
+	
+	/**
+	 * Gets a tool session attribute, null if not any attribute is set 
+	 * with this name.
+	 * @param name name of the attribute
+	 * @return Object if one set, else null.
+	 * @see Session#getAttribute(String)
+	 */
+	public static Object getToolSessionAttribute(String name) {
+		ToolSession mySession = SessionManager.getCurrentToolSession();
+		if (mySession != null) {
+			return mySession.getAttribute(name);
+		}
+		return null;
+	}
+	
+	/**
+	 * Removes a tool session attribute with the given name
+	 * @param name
+	 * @see Session#removeAttribute(String)
+	 */
+	public static void removeToolSessionAttribute(String name) {
+		ToolSession mySession = SessionManager.getCurrentToolSession();
+		if (mySession != null) {
+			mySession.removeAttribute(name);
+		}
 	}
 
 	public static void checkPermission(String permission)

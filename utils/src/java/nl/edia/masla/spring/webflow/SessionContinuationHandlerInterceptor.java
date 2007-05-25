@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import nl.edia.sakai.tool.util.SakaiUtils;
+
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -36,7 +38,7 @@ public class SessionContinuationHandlerInterceptor extends HandlerInterceptorAda
 		Map myModel = modelAndView.getModel();
 		if (myModel != null) {
 			Object myExecutionKey = myModel.get("flowExecutionKey");
-			request.getSession(true).setAttribute("_flowExecutionKey", myExecutionKey);
+			SakaiUtils.setToolSessionAttribute("_flowExecutionKey", myExecutionKey);
 		}
 	}
 }
