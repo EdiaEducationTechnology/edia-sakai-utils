@@ -49,11 +49,11 @@ public class SakaiUtils {
 	/** Preferences key for user's regional language locale */
 	public static final String LOCALE_KEY = "locale";
 
-
 	/**
 	 * <p>
 	 * Gets the current active site.
 	 * </p>
+	 * 
 	 * @return the current site, null if none found (highly unlikely)
 	 */
 	public static Site getCurrentSite() {
@@ -61,7 +61,8 @@ public class SakaiUtils {
 		String mySiteId = getCurrentSiteId();
 		if (mySiteId != null) {
 			try {
-				mySite = org.sakaiproject.site.cover.SiteService.getSite(mySiteId);
+				mySite = org.sakaiproject.site.cover.SiteService
+						.getSite(mySiteId);
 			} catch (IdUnusedException e) {
 				// Ignore
 			}
@@ -69,63 +70,64 @@ public class SakaiUtils {
 
 		return mySite;
 	}
-	
+
 	/**
 	 * <p>
 	 * Get the current site identifier. Each unique site has an unique
 	 * identifier.
 	 * </p>
+	 * 
 	 * @return the current site id, null if none found (highly unlikely)
 	 */
 	public static String getCurrentSiteId() {
 		String currentSiteId = null;
 
-		Placement thisPlacement = ToolManager.getCurrentPlacement();
-		if (thisPlacement != null) {
-			currentSiteId = thisPlacement.getContext();
+		Placement myCurrentPlacement = ToolManager.getCurrentPlacement();
+		if (myCurrentPlacement != null) {
+			currentSiteId = myCurrentPlacement.getContext();
 		}
 		return currentSiteId;
 	}
-	
+
 	/**
 	 * <p>
-	 * The placement id is the unique identifier of the tool within a site.
-	 * The same tool twice on the same site will result in a different
-	 * placement id. 
+	 * The placement id is the unique identifier of the tool within a site. The
+	 * same tool twice on the same site will result in a different placement id.
 	 * </p>
 	 * <p>
 	 * A placement id is global unique within a sakai instance.
 	 * </p>
+	 * 
 	 * @return placement id, null if none found (highly unlikely)
 	 */
 	public static String getCurrentPlacementId() {
 		String placementId = null;
-		Placement thisPlacement = ToolManager.getCurrentPlacement();
-		if (placementId != null) {
-			placementId = thisPlacement.getId();
+		Placement myCurrentPlacement = ToolManager.getCurrentPlacement();
+		if (myCurrentPlacement != null) {
+			placementId = myCurrentPlacement.getId();
 		}
 		return placementId;
 	}
-	
+
 	/**
 	 * <p>
-	 * Gets the tool id, beware that this is not the placement
-	 * id. The tool id is unique for a specific tool, but
-	 * idential for all instances of the same tool over
-	 * the different sites.
+	 * Gets the tool id, beware that this is not the placement id. The tool id
+	 * is unique for a specific tool, but idential for all instances of the same
+	 * tool over the different sites.
 	 * </p>
+	 * 
 	 * @see #getCurrentPlacementId()
 	 * @return the tool id, null if none found (highly unlikely)
 	 */
 	public static String getCurrentToolId() {
 		String currentTool = null;
-		Placement thisPlacement = ToolManager.getCurrentPlacement();
-		if (currentTool != null) {
-			currentTool = thisPlacement.getToolId();
+		Placement myCurrentPlacement = ToolManager.getCurrentPlacement();
+		if (myCurrentPlacement != null) {
+			currentTool = myCurrentPlacement.getToolId();
 		}
 		return currentTool;
 	}
-	
+
 	/**
 	 * @deprecated
 	 * @see #getCurrentSiteId()
@@ -133,18 +135,19 @@ public class SakaiUtils {
 	public static String getContextSiteId() {
 		return getCurrentSiteId();
 	}
-	
+
 	/**
 	 * <p>
 	 * Returns the current user id.
 	 * </p>
+	 * 
 	 * @return
 	 */
 	public static String getCurrentUserId() {
 		return SessionManager.getCurrentSessionUserId();
 	}
-	
-	/** 
+
+	/**
 	 * @deprecated
 	 * @see #getCurrentUserId()
 	 */
@@ -154,8 +157,12 @@ public class SakaiUtils {
 
 	public static String getConfigValue(String key) {
 		Placement myCurrentPlacement = ToolManager.getCurrentPlacement();
-		Properties myConfig = myCurrentPlacement.getConfig();
-		return myConfig.getProperty(key);
+		if (myCurrentPlacement != null) {
+			Properties myConfig = myCurrentPlacement.getConfig();
+			return myConfig.getProperty(key);
+		}
+		return null;
+		
 	}
 
 	public static boolean hasPermission(String permission) {
@@ -165,71 +172,79 @@ public class SakaiUtils {
 		return myCanView;
 	}
 
-	public static void checkPermission(String permission) throws PermissionException {
+	public static void checkPermission(String permission)
+			throws PermissionException {
 		Site myCurrentSite = getCurrentSite();
 		String myReference = myCurrentSite.getReference();
 		Boolean myCanView = SecurityService.unlock(permission, myReference);
 		if (!myCanView) {
-			throw new PermissionException(getCurrentUserName(), permission, myReference);
+			throw new PermissionException(getCurrentUserName(), permission,
+					myReference);
 		}
 	}
 
 	/**
 	 * <p>
-	 * Creates a new event record. Events are defined by 
-	 * their string representaion of the action, usually
-	 * this is the funtion, such as site.del. 
-	 * The resource is the identifier of the object that is 
-	 * being subjected. Usually the id.
+	 * Creates a new event record. Events are defined by their string
+	 * representaion of the action, usually this is the funtion, such as
+	 * site.del. The resource is the identifier of the object that is being
+	 * subjected. Usually the id.
 	 * </p>
-	 * @param action the representation of the action
-	 * @param resource the identification of the resource
+	 * 
+	 * @param action
+	 *            the representation of the action
+	 * @param resource
+	 *            the identification of the resource
 	 */
 	public static void createEvent(String action, String resource) {
-		org.sakaiproject.event.api.EventTrackingService myEventTrackingService = EventTrackingService.getInstance();
-		Event myEvent = myEventTrackingService.newEvent(action, resource, false);
+		org.sakaiproject.event.api.EventTrackingService myEventTrackingService = EventTrackingService
+				.getInstance();
+		Event myEvent = myEventTrackingService
+				.newEvent(action, resource, false);
 		myEventTrackingService.post(myEvent);
 	}
-	
+
 	/**
 	 * @deprecated
 	 * @see #createEvent(String, String)
 	 */
-	public static void spawnEvent(String action, String resource) { 
+	public static void spawnEvent(String action, String resource) {
 		createEvent(action, resource);
 	}
 
 	/**
 	 * <p>
-	 * Creates a new event record. Events are defined by 
-	 * their string representaion of the action, usually
-	 * this is the funtion, such as site.del. 
-	 * The resource is the identifier of the object that is 
-	 * being modified. Usually the id.
+	 * Creates a new event record. Events are defined by their string
+	 * representaion of the action, usually this is the funtion, such as
+	 * site.del. The resource is the identifier of the object that is being
+	 * modified. Usually the id.
 	 * </p>
-	 * @param action the representation of the action
-	 * @param resource the identification of the resource
+	 * 
+	 * @param action
+	 *            the representation of the action
+	 * @param resource
+	 *            the identification of the resource
 	 */
 
 	public static void createModificationEvent(String action, String resource) {
-		org.sakaiproject.event.api.EventTrackingService myEventTrackingService = EventTrackingService.getInstance();
+		org.sakaiproject.event.api.EventTrackingService myEventTrackingService = EventTrackingService
+				.getInstance();
 		Event myEvent = myEventTrackingService.newEvent(action, resource, true);
 		myEventTrackingService.post(myEvent);
 	}
-	
+
 	/**
 	 * @deprecated
 	 * @see #createModificationEvent(String, String)
 	 */
-	public static void spawnModificationEvent(String action, String resource) { 
+	public static void spawnModificationEvent(String action, String resource) {
 		createModificationEvent(action, resource);
 	}
-	
+
 	/**
-	 * Return user's preferred locale 
-	 * First: return locale from Sakai user preferences, if available 
-	 * Second: return locale from user session, if available 
-	 * Last: return system default locale
+	 * Return user's preferred locale First: return locale from Sakai user
+	 * preferences, if available Second: return locale from user session, if
+	 * available Last: return system default locale
 	 * 
 	 * @return user's Locale object
 	 */

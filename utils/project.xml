@@ -6,7 +6,7 @@
 	<name>Edia Test Tool</name>
 	<id>edia-sakai-utils</id>
 	<groupId>edia</groupId>
-	<currentVersion>1.0.0</currentVersion>
+	<currentVersion>${edia.sakai.utils.version}</currentVersion>
 	<organization>
 		<name>Edia Educatie Technologie</name>
 		<url>http://www.edia.nl/</url>
