@@ -38,7 +38,9 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.Preferences;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.PreferencesService;
+import org.sakaiproject.user.cover.UserDirectoryService;
 
 public class SakaiUtils {
 
@@ -164,20 +166,31 @@ public class SakaiUtils {
 			return myConfig.getProperty(key);
 		}
 		return null;
-		
+
 	}
 
 	public static boolean hasPermission(String permission) {
 		Site myCurrentSite = getCurrentSite();
 		String myReference = myCurrentSite.getReference();
-		Boolean myCanView = SecurityService.unlock(permission, myReference);
-		return myCanView;
+		User myUser = getCurrentUser();
+		if (myUser != null) {
+			Boolean myCanView = SecurityService.unlock(myUser, permission, myReference);
+			return myCanView;
+		}
+		return false;
 	}
-	
+
+	public static User getCurrentUser() {
+		return UserDirectoryService.getCurrentUser();
+	}
+
 	/**
-	 * Sets a tool session attribute, with the given name. 
-	 * @param name of the attribute
-	 * @param value of the attribute, not null
+	 * Sets a tool session attribute, with the given name.
+	 * 
+	 * @param name
+	 *            of the attribute
+	 * @param value
+	 *            of the attribute, not null
 	 * @see Session#setAttribute(String, Object)
 	 */
 	public static void setToolSessionAttribute(String name, Object value) {
@@ -186,11 +199,13 @@ public class SakaiUtils {
 			mySession.setAttribute(name, value);
 		}
 	}
-	
+
 	/**
-	 * Gets a tool session attribute, null if not any attribute is set 
-	 * with this name.
-	 * @param name name of the attribute
+	 * Gets a tool session attribute, null if not any attribute is set with this
+	 * name.
+	 * 
+	 * @param name
+	 *            name of the attribute
 	 * @return Object if one set, else null.
 	 * @see Session#getAttribute(String)
 	 */
@@ -201,9 +216,10 @@ public class SakaiUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Removes a tool session attribute with the given name
+	 * 
 	 * @param name
 	 * @see Session#removeAttribute(String)
 	 */
