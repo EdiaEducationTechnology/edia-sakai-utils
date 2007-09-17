@@ -23,6 +23,8 @@
 
 package nl.edia.masla.sakai.tag;
 
+import java.util.StringTokenizer;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -48,8 +50,18 @@ public class PermissionCheckTag extends BodyTagSupport {
 
 	@Override
 	public int doStartTag() throws JspException {
-		if (SakaiUtils.hasPermission(permission)) {
-			return EVAL_BODY_INCLUDE;
+		if (permission.indexOf("|") != -1) {
+			StringTokenizer myTokenizer = new StringTokenizer(permission, "|"); 
+			while (myTokenizer.hasMoreElements()) {
+	            String myPermission = ((String) myTokenizer.nextElement()).trim();
+				if (SakaiUtils.hasPermission(myPermission)) {
+					return EVAL_BODY_INCLUDE;
+				}
+            }
+		} else {
+			if (SakaiUtils.hasPermission(permission)) {
+				return EVAL_BODY_INCLUDE;
+			}
 		}
 		return SKIP_BODY;
 	}
