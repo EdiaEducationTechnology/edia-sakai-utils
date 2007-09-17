@@ -23,7 +23,10 @@
 package nl.edia.sakai.tool.util;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.entity.api.ResourceProperties;
@@ -34,6 +37,7 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
@@ -53,6 +57,15 @@ public class SakaiUtils {
 	/** Preferences key for user's regional language locale */
 	public static final String LOCALE_KEY = "locale";
 
+	/** The special panel name for the main. */
+	protected static final String MAIN_PANEL = "Main";
+
+	/** The parameter for paneld. */
+	public final static String PARAM_PANEL = "panel";
+
+	/** ToolSession attribute name holding the helper id, if we are in helper mode. NOTE: promote to Tool -ggolden */
+	protected static final String HELPER_ID = "sakai.tool.helper.id";
+
 	/**
 	 * <p>
 	 * Gets the current active site.
@@ -65,8 +78,7 @@ public class SakaiUtils {
 		String mySiteId = getCurrentSiteId();
 		if (mySiteId != null) {
 			try {
-				mySite = org.sakaiproject.site.cover.SiteService
-						.getSite(mySiteId);
+				mySite = org.sakaiproject.site.cover.SiteService.getSite(mySiteId);
 			} catch (IdUnusedException e) {
 				// Ignore
 			}
@@ -194,7 +206,7 @@ public class SakaiUtils {
 	 * @see Session#setAttribute(String, Object)
 	 */
 	public static void setToolSessionAttribute(String name, Object value) {
-		ToolSession mySession = SessionManager.getCurrentToolSession();
+		ToolSession mySession = getToolSession();
 		if (mySession != null) {
 			mySession.setAttribute(name, value);
 		}
@@ -210,11 +222,32 @@ public class SakaiUtils {
 	 * @see Session#getAttribute(String)
 	 */
 	public static Object getToolSessionAttribute(String name) {
-		ToolSession mySession = SessionManager.getCurrentToolSession();
+		ToolSession mySession = getToolSession();
 		if (mySession != null) {
 			return mySession.getAttribute(name);
 		}
 		return null;
+	}
+	
+	/**
+	 * Gets and removes session attribute
+	 * @param name
+	 * @return
+	 */
+	public static Object popToolSessionAttribute(String name) {
+		ToolSession mySession = getToolSession();
+		if (mySession != null) {
+			Object myAttribute = mySession.getAttribute(name);
+			if (myAttribute != null) {
+				removeToolSessionAttribute(name);
+			}
+			return myAttribute;
+		}
+		return null;
+	}
+
+	public static ToolSession getToolSession() {
+		return SessionManager.getCurrentToolSession();
 	}
 
 	/**
@@ -224,20 +257,18 @@ public class SakaiUtils {
 	 * @see Session#removeAttribute(String)
 	 */
 	public static void removeToolSessionAttribute(String name) {
-		ToolSession mySession = SessionManager.getCurrentToolSession();
+		ToolSession mySession = getToolSession();
 		if (mySession != null) {
 			mySession.removeAttribute(name);
 		}
 	}
 
-	public static void checkPermission(String permission)
-			throws PermissionException {
+	public static void checkPermission(String permission) throws PermissionException {
 		Site myCurrentSite = getCurrentSite();
 		String myReference = myCurrentSite.getReference();
 		Boolean myCanView = SecurityService.unlock(permission, myReference);
 		if (!myCanView) {
-			throw new PermissionException(getCurrentUserName(), permission,
-					myReference);
+			throw new PermissionException(getCurrentUserName(), permission, myReference);
 		}
 	}
 
@@ -255,10 +286,8 @@ public class SakaiUtils {
 	 *            the identification of the resource
 	 */
 	public static void createEvent(String action, String resource) {
-		org.sakaiproject.event.api.EventTrackingService myEventTrackingService = EventTrackingService
-				.getInstance();
-		Event myEvent = myEventTrackingService
-				.newEvent(action, resource, false);
+		org.sakaiproject.event.api.EventTrackingService myEventTrackingService = EventTrackingService.getInstance();
+		Event myEvent = myEventTrackingService.newEvent(action, resource, false);
 		myEventTrackingService.post(myEvent);
 	}
 
@@ -285,8 +314,7 @@ public class SakaiUtils {
 	 */
 
 	public static void createModificationEvent(String action, String resource) {
-		org.sakaiproject.event.api.EventTrackingService myEventTrackingService = EventTrackingService
-				.getInstance();
+		org.sakaiproject.event.api.EventTrackingService myEventTrackingService = EventTrackingService.getInstance();
 		Event myEvent = myEventTrackingService.newEvent(action, resource, true);
 		myEventTrackingService.post(myEvent);
 	}
@@ -330,8 +358,7 @@ public class SakaiUtils {
 		// Second: find locale from user session, if available
 		if (loc == null) {
 			try {
-				loc = (Locale) SessionManager.getCurrentSession().getAttribute(
-						"locale");
+				loc = (Locale) SessionManager.getCurrentSession().getAttribute("locale");
 			} catch (NullPointerException e) {
 			} // ignore and continue
 		}
@@ -343,6 +370,38 @@ public class SakaiUtils {
 		}
 
 		return loc;
+	}
+
+	public static void startHelper(HttpServletRequest req, String helperId) {
+		startHelper(req, helperId, null, null);
+	}
+
+	public static void startHelper(HttpServletRequest req, String helperId, Map<String, String> extraAttributes) {
+		startHelper(req, helperId, null, extraAttributes);
+	}
+
+	/**
+	 * Setup for a helper tool - all subsequent requests will be directed there, till the tool is done.
+	 * 
+	 * @param helperId
+	 *        The helper tool id.
+	 */
+	public static void startHelper(HttpServletRequest req, String helperId, String panel, Map<String, String> extraAttributes) {
+		if (panel == null)
+			panel = MAIN_PANEL;
+
+		ToolSession toolSession = getToolSession();
+		toolSession.setAttribute(HELPER_ID + panel, helperId);
+
+		// the done URL - this url and the extra parameter to indicate done
+		// also make sure the panel is indicated - assume that it needs to be main, assuming that helpers are taking over the entire tool response
+		String doneUrl = req.getContextPath() + req.getServletPath() + (req.getPathInfo() == null ? "" : req.getPathInfo()) + "?" + HELPER_ID + panel + "=done" + "&" + PARAM_PANEL + "=" + panel;
+		if (extraAttributes != null) {
+			for (String myKey : extraAttributes.keySet()) {
+				doneUrl += "&" + myKey + "=" + extraAttributes.get(myKey);
+			}
+		}
+		toolSession.setAttribute(helperId + Tool.HELPER_DONE_URL, doneUrl);
 	}
 
 }
