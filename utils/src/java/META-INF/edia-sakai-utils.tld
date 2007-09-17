@@ -8,15 +8,22 @@
 	<short-name>est</short-name>
 	<uri>http://edia.nl/jsp/tags/edia-sakai-tags</uri>
 	<tag>
-		<description>Catches any Throwable that occurs in its body and optionally exposes it.</description>
+		<description>Checks the permission of the user and only renders the contents of the tag if the user has permission.</description>
 		<name>allowed</name>
 		<tag-class>nl.edia.masla.sakai.tag.PermissionCheckTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
-			<description>Checks the permission of the user and only redeners the contents of the tag if the user has permission.</description>
+			<description>The permission to be checked.</description>
 			<name>permission</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
+    <tag>
+      <description>Formats the text using FormattedText.escapeHtmlFormattedText</description>
+      <name>escapeHtmlFormattedText</name>
+      <tag-class>nl.edia.masla.sakai.tag.FormattedTextTag</tag-class>
+      <body-content>JSP</body-content>
+    </tag>
 </taglib>
