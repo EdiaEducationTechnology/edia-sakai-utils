@@ -25,6 +25,7 @@ package nl.edia.sakai.tool.util;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,6 +36,7 @@ import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.Tool;
@@ -228,7 +230,7 @@ public class SakaiUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Gets and removes session attribute
 	 * @param name
@@ -340,17 +342,19 @@ public class SakaiUtils {
 		// First: find locale from Sakai user preferences, if available
 		try {
 			String userId = SessionManager.getCurrentSessionUserId();
-			Preferences prefs = PreferencesService.getPreferences(userId);
-			ResourceProperties locProps = prefs.getProperties(APPLICATION_ID);
+			if (userId != null) {
+				Preferences prefs = PreferencesService.getPreferences(userId);
+				ResourceProperties locProps = prefs.getProperties(APPLICATION_ID);
 
-			String localeString = locProps.getProperty(LOCALE_KEY);
-			if (localeString != null) {
-				String[] locValues = localeString.split("_");
-				if (locValues.length > 1)
-					loc = new Locale(locValues[0], locValues[1]); // language,
-				// country
-				else if (locValues.length == 1)
-					loc = new Locale(locValues[0]); // just language
+				String localeString = locProps.getProperty(LOCALE_KEY);
+				if (localeString != null) {
+					String[] locValues = localeString.split("_");
+					if (locValues.length > 1)
+						loc = new Locale(locValues[0], locValues[1]); // language,
+					// country
+					else if (locValues.length == 1)
+						loc = new Locale(locValues[0]); // just language
+				}
 			}
 		} catch (Exception e) {
 		} // ignore and continue
@@ -370,6 +374,47 @@ public class SakaiUtils {
 		}
 
 		return loc;
+	}
+
+	/**
+	 * Return user's preferred TimeZone First: return TimeZone from Sakai user
+	 * preferences, if available Second: return TimeZone from user session, if
+	 * available Last: return system default TimeZone
+	 * 
+	 * @return user's TimeZone object
+	 */
+	public static TimeZone getTimeZone() {
+		TimeZone myTimeZone = null;
+
+		// First: find locale from Sakai user preferences, if available
+		try {
+			String userId = SessionManager.getCurrentSessionUserId();
+			if (userId != null) {
+				Preferences prefs = PreferencesService.getPreferences(userId);
+				ResourceProperties tzProps = prefs.getProperties(TimeService.APPLICATION_ID);
+				String timeZoneString  = tzProps.getProperty(TimeService.TIMEZONE_KEY);
+				if (timeZoneString != null) {
+					myTimeZone = TimeZone.getTimeZone(timeZoneString);
+				}
+			}
+		} catch (Exception e) {
+		} // ignore and continue
+
+		// Second: find locale from user session, if available
+		if (myTimeZone == null) {
+			try {
+				myTimeZone = (TimeZone) SessionManager.getCurrentSession().getAttribute(TimeService.TIMEZONE_KEY);
+			} catch (NullPointerException e) {
+			} // ignore and continue
+		}
+
+		// Last: find system default locale
+		if (myTimeZone == null) {
+			// fallback to default.
+			myTimeZone = TimeZone.getDefault();
+		}
+
+		return myTimeZone;
 	}
 
 	public static void startHelper(HttpServletRequest req, String helperId) {
