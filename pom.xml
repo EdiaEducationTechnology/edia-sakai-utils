@@ -10,7 +10,7 @@
   <name>Edia Sakai Utils Base</name>
   <groupId>nl.edia</groupId>
   <artifactId>edia-sakai-utils-base</artifactId>
-  <version>M2</version>
+  <version>${sakai.version}</version>
   <packaging>pom</packaging>
  <modules>
 <module>utils</module>
