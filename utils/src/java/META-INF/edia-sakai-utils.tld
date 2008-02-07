@@ -20,10 +20,11 @@
 		</attribute>
 	</tag>
 
-    <tag>
-      <description>Formats the text using FormattedText.escapeHtmlFormattedText</description>
-      <name>escapeHtmlFormattedText</name>
-      <tag-class>nl.edia.masla.sakai.tag.FormattedTextTag</tag-class>
-      <body-content>JSP</body-content>
-    </tag>
+	<tag>
+		<description>Formats the text using FormattedText.escapeHtmlFormattedText</description>
+		<name>escapeHtmlFormattedText</name>
+		<tag-class>nl.edia.masla.sakai.tag.FormattedTextTag</tag-class>
+		<body-content>JSP</body-content>
+	</tag>
+
 </taglib>
