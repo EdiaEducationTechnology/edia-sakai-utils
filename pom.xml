@@ -4,14 +4,14 @@
   <parent>
     <artifactId>master</artifactId>
     <groupId>org.sakaiproject</groupId>
-    <version>2.5.0</version>
+    <version>SNAPSHOT</version>
     <relativePath>../master/pom.xml</relativePath>
   </parent>
   <name>Edia Sakai Utils Base</name>
   <groupId>nl.edia</groupId>
   <artifactId>edia-sakai-utils-base</artifactId>
   <packaging>pom</packaging>
- <modules>
+  <modules>
     <module>utils</module>
- </modules>
+  </modules>
 </project>
