@@ -338,32 +338,37 @@ public class SakaiUtils {
 	 */
 	public static Locale getLocale() {
 		Locale loc = null;
-
-		// First: find locale from Sakai user preferences, if available
-		try {
-			String userId = SessionManager.getCurrentSessionUserId();
-			if (userId != null) {
-				Preferences prefs = PreferencesService.getPreferences(userId);
-				ResourceProperties locProps = prefs.getProperties(APPLICATION_ID);
-
-				String localeString = locProps.getProperty(LOCALE_KEY);
-				if (localeString != null) {
-					String[] locValues = localeString.split("_");
-					if (locValues.length > 1)
-						loc = new Locale(locValues[0], locValues[1]); // language,
-					// country
-					else if (locValues.length == 1)
-						loc = new Locale(locValues[0]); // just language
-				}
-			}
-		} catch (Exception e) {
-		} // ignore and continue
-
-		// Second: find locale from user session, if available
+		// Oddly enough, the javadoc from org.sakaiproject.util.ResourceLoader says it loads
+		// the user pref first, and than loads the locale from the session, but the code
+		// works the other way around...
+		
+		// Second, ehh no, First: find locale from user session, if available
 		if (loc == null) {
 			try {
 				loc = (Locale) SessionManager.getCurrentSession().getAttribute("locale");
 			} catch (NullPointerException e) {
+			} // ignore and continue
+		}
+
+		if (loc == null) {
+			// First, no Second: find locale from Sakai user preferences, if available
+			try {
+				String userId = SessionManager.getCurrentSessionUserId();
+				if (userId != null) {
+					Preferences prefs = PreferencesService.getPreferences(userId);
+					ResourceProperties locProps = prefs.getProperties(APPLICATION_ID);
+	
+					String localeString = locProps.getProperty(LOCALE_KEY);
+					if (localeString != null) {
+						String[] locValues = localeString.split("_");
+						if (locValues.length > 1)
+							loc = new Locale(locValues[0], locValues[1]); // language,
+						// country
+						else if (locValues.length == 1)
+							loc = new Locale(locValues[0]); // just language
+					}
+				}
+			} catch (Exception e) {
 			} // ignore and continue
 		}
 
