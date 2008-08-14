@@ -26,5 +26,17 @@
 		<tag-class>nl.edia.masla.sakai.tag.FormattedTextTag</tag-class>
 		<body-content>JSP</body-content>
 	</tag>
+	<tag>
+		<description>Formats the text using FormattedText.trimFormattedText</description>
+		<name>trimFormattedText</name>
+		<tag-class>nl.edia.masla.sakai.tag.TrimFormattedTextTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>The maxNumOfChars to be limited.</description>
+			<name>maxNumOfChars</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>		
+	</tag>
 
 </taglib>

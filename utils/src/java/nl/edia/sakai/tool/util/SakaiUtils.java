@@ -48,6 +48,8 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.PreferencesService;
 import org.sakaiproject.user.cover.UserDirectoryService;
 
+import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
+
 public class SakaiUtils {
 
 	/**
@@ -403,7 +405,9 @@ public class SakaiUtils {
 				}
 			}
 		} catch (Exception e) {
-		} // ignore and continue
+			// ignore and continue
+			myTimeZone = null;
+		} 
 
 		// Second: find locale from user session, if available
 		if (myTimeZone == null) {
@@ -436,19 +440,20 @@ public class SakaiUtils {
 	 * @param helperId
 	 *        The helper tool id.
 	 */
-	public static void startHelper(HttpServletRequest req, String helperId, String panel, Map<String, String> extraAttributes) {
-		if (panel == null)
-			panel = MAIN_PANEL;
+	public static void startHelper(HttpServletRequest req, String helperId, String p, Map<String, String> extraAttributes) {
+		String myPanel = p;
+		if (myPanel == null)
+			myPanel = MAIN_PANEL;
 
 		ToolSession toolSession = getToolSession();
-		toolSession.setAttribute(HELPER_ID + panel, helperId);
+		toolSession.setAttribute(HELPER_ID + myPanel, helperId);
 
 		// the done URL - this url and the extra parameter to indicate done
 		// also make sure the panel is indicated - assume that it needs to be main, assuming that helpers are taking over the entire tool response
-		String doneUrl = req.getContextPath() + req.getServletPath() + (req.getPathInfo() == null ? "" : req.getPathInfo()) + "?" + HELPER_ID + panel + "=done" + "&" + PARAM_PANEL + "=" + panel;
+		String doneUrl = req.getContextPath() + req.getServletPath() + (req.getPathInfo() == null ? "" : req.getPathInfo()) + "?" + HELPER_ID + myPanel + "=done" + "&" + PARAM_PANEL + "=" + myPanel;
 		if (extraAttributes != null) {
-			for (String myKey : extraAttributes.keySet()) {
-				doneUrl += "&" + myKey + "=" + extraAttributes.get(myKey);
+			for (Map.Entry<String, String> myEntry : extraAttributes.entrySet()) {
+				doneUrl += "&" + myEntry.getKey() + "=" + myEntry.getValue();
 			}
 		}
 		toolSession.setAttribute(helperId + Tool.HELPER_DONE_URL, doneUrl);
