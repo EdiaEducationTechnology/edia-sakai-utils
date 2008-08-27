@@ -104,7 +104,7 @@ public class WebappToolServlet extends HttpServlet {
 	}
 
 	private boolean doHelper(HttpServletResponse response, HttpServletRequest request, String pathInfo) throws ToolException {
-		Pattern myPattern = Pattern.compile(".*/([^/]+)\\.helper");
+		Pattern myPattern = Pattern.compile(".*/([^/]+)\\.helper(?:/.*)?");
 		Matcher myMatcher = myPattern.matcher(pathInfo);
 		if (myMatcher.matches()) {
 			String myHelperId = myMatcher.group(1);

@@ -187,11 +187,13 @@ public class SakaiUtils {
 
 	public static boolean hasPermission(String permission) {
 		Site myCurrentSite = getCurrentSite();
-		String myReference = myCurrentSite.getReference();
-		User myUser = getCurrentUser();
-		if (myUser != null) {
-			Boolean myCanView = SecurityService.unlock(myUser, permission, myReference);
-			return myCanView;
+		if (myCurrentSite != null) {
+			String myReference = myCurrentSite.getReference();
+			User myUser = getCurrentUser();
+			if (myUser != null && myReference != null) {
+				Boolean myCanView = SecurityService.unlock(myUser, permission, myReference);
+				return myCanView;
+			}
 		}
 		return false;
 	}
@@ -269,11 +271,14 @@ public class SakaiUtils {
 
 	public static void checkPermission(String permission) throws PermissionException {
 		Site myCurrentSite = getCurrentSite();
-		String myReference = myCurrentSite.getReference();
-		Boolean myCanView = SecurityService.unlock(permission, myReference);
-		if (!myCanView) {
-			throw new PermissionException(getCurrentUserName(), permission, myReference);
+		if (myCurrentSite != null) {
+			String myReference = myCurrentSite.getReference();
+			Boolean myCanView = SecurityService.unlock(permission, myReference);
+			if (!myCanView) {
+				throw new PermissionException(getCurrentUserName(), permission, myReference);
+			}
 		}
+		// No current site, so nothing to say. 
 	}
 
 	/**
