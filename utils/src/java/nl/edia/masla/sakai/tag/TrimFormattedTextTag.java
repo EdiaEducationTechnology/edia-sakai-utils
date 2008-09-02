@@ -32,9 +32,9 @@ public class TrimFormattedTextTag extends BodyTagSupport {
 	public int doAfterBody() throws JspException {
 		String myString = this.bodyContent.getString();
 		try {
-			StringBuffer myBuffer = new StringBuffer();
-			FormattedText.trimFormattedText(myString, maxNumOfChars, myBuffer);
-			bodyContent.getEnclosingWriter().append(myBuffer.toString());
+			StringBuilder myBuilder = new StringBuilder();
+			FormattedText.trimFormattedText(myString, maxNumOfChars, myBuilder);
+			bodyContent.getEnclosingWriter().append(myBuilder.toString());
 			bodyContent.clearBuffer();
 		} catch (IOException e) {
 			throw new JspException(e);
