@@ -52,6 +52,8 @@
  */
 package nl.edia.spring.web.interceptor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -59,17 +61,32 @@ import java.util.regex.PatternSyntaxException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
+/**
+ * This class stores the last view to be able to restore this view once the visitor gets back at the tool.
+ * @author roland
+ *
+ */
 public class PageVisitInterceptor extends HandlerInterceptorAdapter {
-
-	
-	
-	Pattern pathPattern;
+	/**
+	 * The REGEX pattern to match on.
+	 */
+	protected Pattern pathPattern;
+	/**
+	 * The session attribute
+	 */
 	public static final String SESSION_ATTRIBUTE_NAME = "nl.edia.spring.web.lastVisitPage";
+	/**
+	 * The translation map
+	 * <pre>
+	 * key becomes value
+	 * </pre>
+	 */
+	protected Map<String, String> pageTranslationMap = new HashMap<String, String>();
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
@@ -79,8 +96,9 @@ public class PageVisitInterceptor extends HandlerInterceptorAdapter {
 			Matcher myMatcher = pathPattern.matcher(myServletPath);
 			if (myMatcher.matches()) {
 				String myLastVisitPage = myMatcher.group(1);
+				myLastVisitPage = translateLastVisitPage(myLastVisitPage);
 				ToolSession mySession = SessionManager.getCurrentToolSession();
-				if (request.getQueryString() == null) {
+				if (StringUtils.isEmpty(request.getQueryString())) {
 					mySession.setAttribute(SESSION_ATTRIBUTE_NAME, myLastVisitPage);
 				} else {
 					String myUrl = myLastVisitPage + "?" + request.getQueryString();
@@ -90,6 +108,13 @@ public class PageVisitInterceptor extends HandlerInterceptorAdapter {
 		}
 	}
 
+	protected String translateLastVisitPage(String lastVisitPage) {
+	    if (pageTranslationMap.containsKey(lastVisitPage)) {
+	    	return pageTranslationMap.get(lastVisitPage);
+	    }
+	    return lastVisitPage;
+    }
+
 	public void setPathPattern(String pattern) {
 		try {
 			pathPattern = Pattern.compile(pattern);
@@ -97,4 +122,12 @@ public class PageVisitInterceptor extends HandlerInterceptorAdapter {
 			throw new IllegalArgumentException(e);
 		}
 	}
+
+	public Map<String, String> getPageTranslationMap() {
+    	return pageTranslationMap;
+    }
+
+	public void setPageTranslationMap(Map<String, String> pageTranslationMap) {
+    	this.pageTranslationMap = pageTranslationMap;
+    }
 }
