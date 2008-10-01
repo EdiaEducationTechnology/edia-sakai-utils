@@ -7,7 +7,9 @@ import junit.framework.TestCase;
 public class TrimFormattedTextTagTest extends TestCase {
 
 	public void testGetTextFormatted() throws JspException {
-		new TrimFormattedTextTag().getTextFormatted("formatted");
+		String myString = "formatted";
+		String myTextFormatted = new TrimFormattedTextTag().getTextFormatted(myString);
+		assertEquals(myString, myTextFormatted);
 	}
 
 }
