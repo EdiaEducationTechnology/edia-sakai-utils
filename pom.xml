@@ -1,17 +1,40 @@
 <?xml version="1.0"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>master</artifactId>
-    <groupId>org.sakaiproject</groupId>
-    <version>2.5.2</version>
-    <relativePath>../master/pom.xml</relativePath>
-  </parent>
-  <name>Edia Sakai Utils Base</name>
-  <groupId>nl.edia</groupId>
-  <artifactId>edia-sakai-utils-base</artifactId>
-  <packaging>pom</packaging>
-  <modules>
-    <module>utils</module>
-  </modules>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns="http://maven.apache.org/POM/4.0.0" 
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<artifactId>master</artifactId>
+		<groupId>org.sakaiproject</groupId>
+		<version>2.5.3</version>
+		<relativePath>../master/pom.xml</relativePath>
+	</parent>
+	
+	<name>Edia Sakai Utils Base</name>
+	<artifactId>edia-sakai-utils-base</artifactId>
+    <groupId>nl.edia</groupId>
+	<version>1.1.0-SNAPSHOT</version>
+	
+	<packaging>pom</packaging>
+	
+	<modules>
+		<module>utils</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>nl.edia</groupId>
+				<artifactId>edia-sakai-utils</artifactId>
+				<version>1.1.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject</groupId>
+				<artifactId>sakai-util</artifactId>
+				<version>2.5.3</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 </project>
