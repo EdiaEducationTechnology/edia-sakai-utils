@@ -7,14 +7,14 @@
 	<parent>
 		<artifactId>edia-sakai-utils-base</artifactId>
 		<groupId>nl.edia</groupId>
-		<version>1.1.0</version>
+		<version>1.1.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	
 	<name>Edia Sakai Utils</name>
 	<artifactId>edia-sakai-utils</artifactId>
     <groupId>nl.edia</groupId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.1</version>
 	
 	<organization>
 		<name>Edia Educatie Technologie</name>
