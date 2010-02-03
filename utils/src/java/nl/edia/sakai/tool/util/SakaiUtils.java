@@ -48,8 +48,6 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.PreferencesService;
 import org.sakaiproject.user.cover.UserDirectoryService;
 
-import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
-
 public class SakaiUtils {
 
 	/**
