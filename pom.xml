@@ -13,7 +13,7 @@
 	
 	<name>Edia Sakai Utils Base</name>
 	<artifactId>edia-sakai-utils-base</artifactId>
-    <groupId>nl.edia</groupId>
+    	<groupId>nl.edia</groupId>
 	<version>1.1.2-SNAPSHOT</version>
 	
 	<packaging>pom</packaging>
@@ -24,11 +24,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>nl.edia</groupId>
-				<artifactId>edia-sakai-utils</artifactId>
-				<version>1.1.2-SNAPSHOT</version>
-			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject</groupId>
 				<artifactId>sakai-util</artifactId>
