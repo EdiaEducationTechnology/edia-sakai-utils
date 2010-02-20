@@ -57,12 +57,17 @@ public class WebappToolServlet extends HttpServlet {
 	protected final String MAIN_PANEL = "Main";
 	/** The parameter for paneld. */
 	public final static String PARAM_PANEL = "panel";
+
 	public WebappToolServlet() {
 	}
 
 	protected void service(final HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String contextPath = request.getContextPath();
 		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
+		if (request.getAttribute("oiginalRequest") == null) {
+			request.setAttribute("oiginalRequest", request);
+			request.setAttribute("oiginalRequestUrl", request.getRequestURL());
+		}
 		HttpServletRequest wrappedRequest = new HttpServletRequestWrapper(request) {
 
 			public String getContextPath() {
@@ -70,7 +75,7 @@ public class WebappToolServlet extends HttpServlet {
 			}
 
 		};
-		String myFirstPage = (String)SakaiUtils.popToolSessionAttribute(PageVisitInterceptor.SESSION_ATTRIBUTE_NAME);
+		String myFirstPage = (String) SakaiUtils.popToolSessionAttribute(PageVisitInterceptor.SESSION_ATTRIBUTE_NAME);
 		if (myFirstPage == null) {
 			myFirstPage = getInitParameter("first-page");
 		}
@@ -94,7 +99,7 @@ public class WebappToolServlet extends HttpServlet {
 		if (doHelper(response, origrequest, pathInfo)) {
 			return;
 		}
-		
+
 		RequestDispatcher dispatcher;
 		if (pathInfo == null)
 			dispatcher = request.getRequestDispatcher("");
@@ -110,13 +115,13 @@ public class WebappToolServlet extends HttpServlet {
 			String myHelperId = myMatcher.group(1);
 			ActiveTool helperTool = ActiveToolManager.getActiveTool(myHelperId);
 
+			// String panel = request.getParameter(PARAM_PANEL);
+			// if (panel == null || panel.equals("") || panel.equals("null"))
+			// panel = MAIN_PANEL;
+			// String helperId = HELPER_ID + panel;
+			// ToolSession toolSession = SessionManager.getCurrentToolSession();
+			// toolSession.setAttribute(helperId, helperTool.getId());
 
-//			String panel = request.getParameter(PARAM_PANEL);
-//			if (panel == null || panel.equals("") || panel.equals("null")) panel = MAIN_PANEL;
-//			String helperId = HELPER_ID + panel;
-//			ToolSession toolSession = SessionManager.getCurrentToolSession();
-//			toolSession.setAttribute(helperId, helperTool.getId());
-			
 			String[] parts = pathInfo.split("/");
 			// /portal/tool/e1477edc-a133-4dbb-0073-68eee38670f1/sakai.filepicker.helper
 			String context = "/portal/tool/" + SakaiUtils.getCurrentPlacementId() + "/" + helperTool.getId() + ".helper";
