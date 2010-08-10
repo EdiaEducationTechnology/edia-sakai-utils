@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" version="2.0">
+
+	<description>Edia Sakai Util Tags</description>
+	<display-name>Edia Utils</display-name>
+	<tlib-version>1.1</tlib-version>
+	<short-name>est</short-name>
+	<uri>http://edia.nl/jsp/tags/edia-sakai-tags</uri>
+	<tag>
+		<description>Checks the permission of the user and only renders the contents of the tag if the user has permission.</description>
+		<name>allowed</name>
+		<tag-class>nl.edia.masla.sakai.tag.PermissionCheckTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>The permission to be checked.</description>
+			<name>permission</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<description>Formats the text using FormattedText.escapeHtmlFormattedText</description>
+		<name>escapeHtmlFormattedText</name>
+		<tag-class>nl.edia.masla.sakai.tag.FormattedTextTag</tag-class>
+		<body-content>JSP</body-content>
+	</tag>
+	<tag>
+		<description>Formats the text using FormattedText.trimFormattedText</description>
+		<name>trimFormattedText</name>
+		<tag-class>nl.edia.masla.sakai.tag.TrimFormattedTextTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>The maxNumOfChars to be limited.</description>
+			<name>maxNumOfChars</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>		
+	</tag>
+
+</taglib>
