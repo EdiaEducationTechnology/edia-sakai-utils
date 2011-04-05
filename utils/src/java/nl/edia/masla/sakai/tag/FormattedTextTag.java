@@ -9,6 +9,8 @@ import org.sakaiproject.util.FormattedText;
 
 public class FormattedTextTag extends BodyTagSupport {
 	
+	private static final long serialVersionUID = 7516396297751202216L;
+
 	public FormattedTextTag() {
 		
 	}
