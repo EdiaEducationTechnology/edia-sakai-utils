@@ -4,22 +4,20 @@
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<parent>
-		<artifactId>edia-sakai-utils-base</artifactId>
-		<groupId>nl.edia</groupId>
-		<version>1.2.1</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	
 	<name>Edia Sakai Utils</name>
+   	<groupId>nl.edia</groupId>
 	<artifactId>edia-sakai-utils</artifactId>
-    	<groupId>nl.edia</groupId>
-	
 	<organization>
 		<name>Edia Educatie Technologie</name>
 		<url>http://www.edia.nl/</url>
 	</organization>
 	<inceptionYear>2007</inceptionYear>
+	
+	<parent>
+		<artifactId>edia-sakai-utils-base</artifactId>
+		<groupId>nl.edia</groupId>
+		<version>1.2.2</version>
+	</parent>
 	
 	<packaging>jar</packaging>
 	
