@@ -83,7 +83,11 @@ public class ChainedGroupProvider implements GroupProvider {
 		return rv;
 	}
 	
-	@SuppressWarnings("unchecked")
+	/**
+	 * @param userEid
+	 * @param provider
+	 * @return
+	 */
 	protected Map<String, String> getGroupRolesForUser(String userEid, GroupProvider provider) {
 		try {
 			return provider.getGroupRolesForUser(userEid);
@@ -111,7 +115,11 @@ public class ChainedGroupProvider implements GroupProvider {
 		return rv;
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * @param id
+	 * @param provider
+	 * @return
+	 */
 	protected Map<String, String> getUserRolesForGroup(String id, GroupProvider provider) {
 		try {
 			return provider.getUserRolesForGroup(id);
@@ -143,6 +151,23 @@ public class ChainedGroupProvider implements GroupProvider {
 			}
 		}
 		return rv;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.authz.api.GroupProvider#groupExists(java.lang.String)
+	 */
+	public boolean groupExists(String id) {
+		if (chain == null || chain.isEmpty()) {
+			return false;
+		}
+		
+		for (GroupProvider groupProvider:chain) {
+			if (groupProvider.groupExists(id)) {
+				return true;
+			}
+		}
+				
+		return false;
 	}
 
 	public void setChain(List<GroupProvider> chain) {
