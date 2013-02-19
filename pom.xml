@@ -9,15 +9,15 @@
   <name>Edia Sakai Utils Base</name>
   <artifactId>edia-sakai-utils-base</artifactId>
   <groupId>nl.edia</groupId>
-  <version>1.4.0</version>
+  <version>1.4.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>utils</module>
   </modules>
   <scm>
-    <connection>scm:svn:https://source.sakaiproject.org/contrib/edia/utils/tags/1.4.0</connection>
-    <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/edia/utils/tags/1.4.0</developerConnection>
-    <url>https://source.sakaiproject.org/contrib/edia/utils/tags/1.4.0</url>
+    <connection>scm:svn:https://source.sakaiproject.org/contrib/edia/utils/trunk</connection>
+    <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/edia/utils/trunk</developerConnection>
+    <url>https://source.sakaiproject.org/contrib/edia/utils/trunk</url>
   </scm>
   <repositories>
     <repository>
