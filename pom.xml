@@ -19,6 +19,12 @@
     <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/edia/utils/trunk</developerConnection>
     <url>https://source.sakaiproject.org/contrib/edia/utils/trunk</url>
   </scm>
+  <distributionManagement>
+    <repository>
+      <id>public</id>
+      <url>http://archiva.edia.nl/archiva/repository/public/</url>
+    </repository>
+  </distributionManagement>
   <repositories>
     <repository>
       <id>sakai-maven2-snapshots</id>
@@ -45,10 +51,9 @@
       </snapshots>
     </repository>
     <repository>
-      <id>default</id>
-      <name>Maven Repository Switchboard</name>
-      <layout>default</layout>
-      <url>http://repo1.maven.org/maven2</url>
+      <id>public</id>
+      <name>Edia Public Archiva Repository</name>
+      <url>http://archiva.edia.nl/archiva/repository/public/</url>
       <releases>
         <enabled>true</enabled>
       </releases>
