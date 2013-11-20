@@ -24,6 +24,10 @@
       <id>public</id>
       <url>http://archiva.edia.nl/archiva/repository/public/</url>
     </repository>
+    <snapshotRepository>
+      <id>public-snapshots</id>
+      <url>http://archiva.edia.nl/archiva/repository/public-snapshots/</url>
+    </snapshotRepository>
   </distributionManagement>
   <repositories>
     <repository>
