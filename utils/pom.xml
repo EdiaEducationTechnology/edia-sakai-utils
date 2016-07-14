@@ -14,7 +14,7 @@
 	<parent>
 		<artifactId>edia-sakai-utils-base</artifactId>
 		<groupId>nl.edia</groupId>
-		<version>1.4.0</version>
+		<version>2.4.0</version>
 	</parent>
 	
 	<packaging>jar</packaging>
@@ -37,11 +37,11 @@
 			<artifactId>sakai-kernel-util</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring</artifactId>
+			<groupId>${sakai.spring.groupId}</groupId>
+			<artifactId>${sakai.spring.artifactId}</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
+			<groupId>${sakai.spring.groupId}</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 		<!-- we are running a webapp in tomcat so we need the servlet api -->
