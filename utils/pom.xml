@@ -37,11 +37,11 @@
 			<artifactId>sakai-kernel-util</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring</artifactId>
+			<groupId>${sakai.spring.groupId}</groupId>
+			<artifactId>${sakai.spring.artifactId}</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
+			<groupId>${sakai.spring.groupId}</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 		<!-- we are running a webapp in tomcat so we need the servlet api -->
