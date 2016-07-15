@@ -32,6 +32,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sakaiproject.kernel</groupId>
+			<artifactId>sakai-kernel-impl</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sakaiproject.kernel</groupId>
 			<artifactId>sakai-component-manager</artifactId>
 		</dependency>
 		<dependency>
