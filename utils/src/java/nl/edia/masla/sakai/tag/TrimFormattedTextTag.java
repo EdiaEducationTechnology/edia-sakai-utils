@@ -1,25 +1,28 @@
 package nl.edia.masla.sakai.tag;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import org.sakaiproject.util.FormattedText;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.util.impl.FormattedTextImpl;
 
 public class TrimFormattedTextTag extends BodyTagSupport {
-	
+
+	private static final Log LOG = LogFactory.getLog(TrimFormattedTextTag.class);
+
 	/**
      * serialVersionUID
      */
     private static final long serialVersionUID = -5005393748678249301L;
 
 	public TrimFormattedTextTag() {
-		
+
 	}
-	
+	FormattedTextImpl formattedText = new FormattedTextImpl();
+
 	protected int maxNumOfChars = 100;
 	
 	public int getMaxNumOfChars() {
@@ -53,64 +56,24 @@ public class TrimFormattedTextTag extends BodyTagSupport {
 	
 	/**
 	 * <p>
-	 * This method calls {@link FormattedText#trimFormattedText(String, int, StringBuffer)} or 
-	 * FormattedText#trimFormattedText(String, int, StringBuilder)}
-	 * depending on which is available. 
+	 * This method calls {@link FormattedTextImpl#trimFormattedText(String, int, StringBuilder)}
 	 * </p>
-	 * <p>
-	 * Apparently the method footprint has changed in 2.5.x by someone who does not really care about other people's code.
-	 * </p> 
 	 * @param text
 	 * @return
 	 * @throws JspException
 	 */
 	public String getTextFormatted(String text) throws JspException {
-	    // The method trimFormattedText changed signature in 2.5.x
-	    // Try to find the method as string builder...
-	    String myFormattedText = trimFormattedTextUsingStringBuilder(text);
-	    if (myFormattedText == null) {
-		    // Try to find the method as string buffer...
-	    	myFormattedText = trimFormattedTextUsingStringBuffer(text);
-	    }
-	    return myFormattedText;
+	    // The method trimFormattedText changed signature in 2.9.x, only one available
+		StringBuilder stringBuilder = new StringBuilder();
+
+		boolean trimSucceeded = formattedText.trimFormattedText(text, maxNumOfChars, stringBuilder);
+		if(!trimSucceeded) {
+			LOG.warn("formattedText.trimFormattedText(text, maxNumOfChars, stringBuilder) failed");
+		}
+
+		return stringBuilder.toString();
     }
 
-	protected String trimFormattedTextUsingStringBuilder(String text) throws JspException {
-	    return callTrimFormattedTextUsing(text, new StringBuilder());
-    }
-
-	protected String trimFormattedTextUsingStringBuffer(String text) throws JspException {
-	    return callTrimFormattedTextUsing(text, new StringBuffer());
-    }
-	
-	/**
-	 * Ugly, ugly, ugly. Get the method by builder class and than call it.
-	 * @param myString
-	 * @param myBuilder
-	 * @return
-	 * @throws JspException
-	 */
-	protected String callTrimFormattedTextUsing(String myString, Object myBuilder) throws JspException {
-	    try {
-		    Method myMethod = FormattedText.class.getMethod("trimFormattedText", String.class, int.class, myBuilder.getClass());
-		    // Method is static, obj can be null
-		    myMethod.invoke(null, myString, maxNumOfChars, myBuilder);
-		    return myBuilder.toString();
-	    } catch (NoSuchMethodException e) {
-	    	// Expected, return null to flag the unavailability of the method.
-	    	return null;
-	    } catch (IllegalArgumentException e) {
-	    	// Unexpected
-        	throw new JspException(e);
-        } catch (IllegalAccessException e) {
-	    	// Unexpected
-        	throw new JspException(e);
-        } catch (InvocationTargetException e) {
-	    	// Unexpected
-        	throw new JspException(e);
-        }
-    }
-	
 	@Override
 	public int doEndTag() throws JspException {
 	    return super.doEndTag();
@@ -118,6 +81,6 @@ public class TrimFormattedTextTag extends BodyTagSupport {
 	
 	public void doTag() throws JspException, IOException {
 		String myString = this.bodyContent.getString();
-		this.bodyContent.append(FormattedText.escapeHtmlFormattedText(myString));
+		this.bodyContent.append(formattedText.escapeHtmlFormattedText(myString));
 	}
 }
