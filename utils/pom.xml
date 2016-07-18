@@ -32,11 +32,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sakaiproject.kernel</groupId>
-			<artifactId>sakai-kernel-impl</artifactId>
-			<version>${sakai.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sakaiproject.kernel</groupId>
 			<artifactId>sakai-component-manager</artifactId>
 		</dependency>
 		<dependency>
@@ -81,6 +76,14 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.8</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.sakaiproject.kernel</groupId>
+			<artifactId>sakai-kernel-impl</artifactId>
+			<version>${sakai.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 	<build>
 	<!-- java source -->
