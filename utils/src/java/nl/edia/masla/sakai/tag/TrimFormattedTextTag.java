@@ -1,13 +1,13 @@
 package nl.edia.masla.sakai.tag;
 
-import java.io.IOException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.util.impl.FormattedTextImpl;
+import java.io.IOException;
+import org.sakaiproject.util.api.FormattedText;
+import org.sakaiproject.component.cover.ComponentManager;
 
 public class TrimFormattedTextTag extends BodyTagSupport {
 
@@ -21,7 +21,6 @@ public class TrimFormattedTextTag extends BodyTagSupport {
 	public TrimFormattedTextTag() {
 
 	}
-	FormattedTextImpl formattedText = new FormattedTextImpl();
 
 	protected int maxNumOfChars = 100;
 	
@@ -63,8 +62,10 @@ public class TrimFormattedTextTag extends BodyTagSupport {
 	 * @throws JspException
 	 */
 	public String getTextFormatted(String text) throws JspException {
-	    // The method trimFormattedText changed signature in 2.9.x, only one available
+
 		StringBuilder stringBuilder = new StringBuilder();
+
+		FormattedText formattedText = getFormattedText();
 
 		boolean trimSucceeded = formattedText.trimFormattedText(text, maxNumOfChars, stringBuilder);
 		if(!trimSucceeded) {
@@ -74,6 +75,10 @@ public class TrimFormattedTextTag extends BodyTagSupport {
 		return stringBuilder.toString();
     }
 
+	protected FormattedText getFormattedText() {
+		return (FormattedText) ComponentManager.getInstance().get(FormattedText.class);
+	}
+
 	@Override
 	public int doEndTag() throws JspException {
 	    return super.doEndTag();
@@ -81,6 +86,7 @@ public class TrimFormattedTextTag extends BodyTagSupport {
 	
 	public void doTag() throws JspException, IOException {
 		String myString = this.bodyContent.getString();
+		FormattedText formattedText = getFormattedText();
 		this.bodyContent.append(formattedText.escapeHtmlFormattedText(myString));
 	}
 }
